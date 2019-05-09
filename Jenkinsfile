@@ -8,7 +8,7 @@ node {
 
     tag = readFile('commit-id').replace("\n", "").replace("\r", "")
     appName = "hello-kenzan"
-    registryHost = "registry:5000/"
+    registryHost = "127.0.0.1:5000/"
     imageName = "${registryHost}${appName}:${tag}"
     env.BUILDIMG=imageName
 
