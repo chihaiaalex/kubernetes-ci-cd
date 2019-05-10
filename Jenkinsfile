@@ -11,17 +11,16 @@ node {
     dockerHubUser = "chihaiaalex"
     imageName = "${dockerHubUser}/${appName}:${tag}"
     env.BUILDIMG=imageName
-    registryCredentials = 'dockerhub'
-    dockerImage = ''
 
     stage "Build"
 
-        dockerImage = docker.build + " -t ${imageName} -f applications/hello-kenzan/Dockerfile applications/hello-kenzan"
+        sh "docker build -t ${imageName} -f applications/hello-kenzan/Dockerfile applications/hello-kenzan"
     
     stage "Push"
 
-        docker.withRegistry('', registryCredentials) {
-            dockerImage.push()
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+            sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+            sh "docker push ${imageName}"
         }
 
     stage "Deploy"
